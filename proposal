@@ -1,0 +1,9 @@
+  while true; do
+    curl -f ${CONTAINER_IP}:$PORT;     # Health-check service
+    if [ $? -eq 0 ]; then
+      curl -L http://$ETCD_HOST:$ETCD_PORT/v2/keys/frontends/1 -XPUT -d value=10.0.1.1 -d ttl=30 # Store internal container ip to etcd with ttl 30
+    else
+      curl -L -X DELETE http://$ETCD_HOST:$ETCD_PORT/v2/keys/frontends/1;   # If service is not answering, delete this key
+    fi;
+    sleep 20;    # repeat every 20 seconds
+  done
