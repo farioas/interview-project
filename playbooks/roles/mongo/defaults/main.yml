@@ -1,0 +1,7 @@
+---
+# file with default variables for mongo
+
+mongo_port: 27017
+mongo_version: 3.2.7
+mongo_image: 'mongo'
+mongo_data_dir: '/var/lib/mongo'

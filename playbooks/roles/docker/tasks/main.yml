@@ -1,0 +1,45 @@
+---
+- name: install docker-py and boto
+  become: yes
+  pip:
+    name: "docker-py=={{ docker_py_version }}"
+
+- name: install docker
+  yum:
+    name: docker-{{ docker_version }}
+  become: yes
+
+- name: comment docker_storage options if not devicemapper
+  replace:
+    dest: '/etc/sysconfig/docker-storage'
+    regexp: '^(DOCKER_STORAGE_OPTIONS=".*)"$'
+    replace: '#\1 "'
+  notify:
+    - restart docker
+  become: yes
+
+- name: upload docker configuration file
+  template:
+    src: docker.j2
+    dest: "/etc/sysconfig/docker"
+  notify:
+    - restart docker
+  become: yes
+
+- meta: flush_handlers # kick off handlers
+
+- name: enable and start the docker service
+  service:
+    name: docker
+    enabled: yes
+    state: started
+  become: yes
+
+- name: Add users to the docker group
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  with_items: "{{ docker_group_members }}"
+  when: docker_group_members is defined
+  become: yes

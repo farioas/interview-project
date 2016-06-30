@@ -1,0 +1,8 @@
+---
+# file with default variables for docker
+
+docker_version: '1.9.1'
+docker_py_version: '1.7.2'
+docker_storage_driver: 'overlay'
+docker_group_members:
+  - "{{ ansible_user_id }}"

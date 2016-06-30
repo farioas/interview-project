@@ -1,0 +1,38 @@
+- name: prepare infra
+  strategy: free
+  hosts: app,api
+  roles:
+    - docker
+  tags: [provision,docker]
+
+- name: launch etcd
+  hosts: etcd
+  roles:
+    - etcd
+  tags: [provision,etcd]
+
+- name: launch mongo
+  hosts: db
+  roles:
+    - mongo
+  tags: [provision,mongo]
+
+
+# - name: Run application
+#   hosts: app
+#   tasks:
+#     - name: run container
+#       become: yes
+#       docker:
+#         image: "{{ etcd_image }}:v{{ etcd_version}}"
+#         name: etcd
+#         net: host
+#         state: reloaded
+#         pull: always
+#         detach: true
+#         volumes:
+#           - "{{ etcd_data_dir }}:{{ etcd_data_dir }}"
+#         env: "{{ run_params }}"
+#         ports:
+#           - "{{ etcd_client_port }}:{{ etcd_client_port }}"
+#           - "{{ etcd_server_port }}:{{ etcd_server_port }}"

@@ -1,0 +1,14 @@
+[local]
+localhost   ansible_connection=local  ansible_python_interpreter=python
+
+[api]
+52.41.252.99
+
+[app]
+52.40.24.61
+
+[etcd]
+52.41.252.99
+
+[db]
+52.40.24.61

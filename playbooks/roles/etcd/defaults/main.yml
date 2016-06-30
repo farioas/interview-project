@@ -1,0 +1,9 @@
+---
+# file with default variables for etcd
+
+etcd_client_port: 2379
+etcd_server_port: 2380
+etcd_version: 2.3.2
+etcd_image: 'quay.io/coreos/etcd'
+etcd_data_dir: '/var/lib/etcd'
+etcd_client_scheme: 'http'

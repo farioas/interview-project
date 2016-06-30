@@ -1,0 +1,12 @@
+- name: run mongo db container
+  become: yes
+  docker:
+    image: "{{ mongo_image }}:{{ mongo_version}}"
+    name: mongo
+    # net: host
+    pull: always
+    detach: true
+    volumes:
+      - "{{ mongo_data_dir }}:/data/db"
+    ports:
+      - "{{ mongo_port }}:{{ mongo_port }}"
