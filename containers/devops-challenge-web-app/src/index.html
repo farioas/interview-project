@@ -1,0 +1,20 @@
+<html>
+<head>
+    <title>DevOps Challenge</title>
+</head>
+<body>
+    <h3>Welcome to DevOps Challenge!</h3>
+    <div class="content"></div>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+    <script type="text/javascript">
+    $.ajax({ url: 'http://<!-- @echo ENDPOINT -->:<!-- @echo ENDPOINT_PORT -->/challenge' }).done(function(response) {
+      var generatedContent = '';
+      response.challengeRequests.map(function(request) {
+        generatedContent += '<div> ID: ' + request._id + ', Time: ' + request.time + '</div>';
+      });
+      $('.content').html(generatedContent);
+    });
+    </script>
+</body>
+</html>
