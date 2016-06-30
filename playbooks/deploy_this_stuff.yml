@@ -22,6 +22,7 @@
 
 - name: Run api
   hosts: api
+  become: yes
   tasks:
     - name: run api
       docker:
@@ -35,9 +36,12 @@
           DB_NAME: "test"
         ports:
           - "{{ api_port }}:{{ api_port }}"
+  tags: [deploy,api]
 
 - name: Run app
   hosts: app
+  # pre_tasks:
+    # - debug: msg="{{ hostvars[groups['api'][0]]['inventory_hostname'] }}"
   tasks:
     - name: run app
       docker:
@@ -46,7 +50,8 @@
         pull: always
         detach: true
         env:
-          ENDPOINT: "{{ hostvars[groups['api'][0]]['ansible_default_ipv4']['address'] }}"
+          ENDPOINT: "{{ hostvars[groups['api'][0]]['inventory_hostname'] }}"
           ENDPOINT_PORT: "{{ api_port }}"
         ports:
           - "{{ app_port }}:{{ app_port }}"
+  tags: [deploy,app]
