@@ -1,3 +1,6 @@
+- name: test
+  hosts: all
+
 - name: prepare infra
   strategy: free
   hosts: app,api
@@ -17,22 +20,33 @@
     - mongo
   tags: [provision,mongo]
 
+- name: Run api
+  hosts: api
+  tasks:
+    - name: run api
+      docker:
+        image: "{{ api_image }}"
+        name: api
+        pull: always
+        detach: true
+        env:
+          DB_HOST: "{{ hostvars[groups['db'][0]]['ansible_default_ipv4']['address'] }}"
+          DB_PORT: "{{ mongo_port }}"
+          DB_NAME: "test"
+        ports:
+          - "{{ api_port }}:{{ api_port }}"
 
-# - name: Run application
-#   hosts: app
-#   tasks:
-#     - name: run container
-#       become: yes
-#       docker:
-#         image: "{{ etcd_image }}:v{{ etcd_version}}"
-#         name: etcd
-#         net: host
-#         state: reloaded
-#         pull: always
-#         detach: true
-#         volumes:
-#           - "{{ etcd_data_dir }}:{{ etcd_data_dir }}"
-#         env: "{{ run_params }}"
-#         ports:
-#           - "{{ etcd_client_port }}:{{ etcd_client_port }}"
-#           - "{{ etcd_server_port }}:{{ etcd_server_port }}"
+- name: Run app
+  hosts: app
+  tasks:
+    - name: run app
+      docker:
+        image: "{{ app_image }}"
+        name: app
+        pull: always
+        detach: true
+        env:
+          ENDPOINT: "{{ hostvars[groups['api'][0]]['ansible_default_ipv4']['address'] }}"
+          ENDPOINT_PORT: "{{ api_port }}"
+        ports:
+          - "{{ app_port }}:{{ app_port }}"

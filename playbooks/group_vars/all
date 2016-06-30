@@ -1,2 +1,7 @@
-app_image:
-api_image:
+app_image: "farioas/interview-project:app"
+app_port: "80"
+api_image: "farioas/interview-project:api"
+api_port: "8000"
+
+mongo_port: 27017
+etcd_client_port: 2379
